@@ -1,14 +1,11 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using PersonalFinanceTracker.Data;
+using PersonalFinanceTracker.Database;
 using PersonalFinanceTracker.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddSingleton<DatabaseContext>();
 
 var app = builder.Build();
 
