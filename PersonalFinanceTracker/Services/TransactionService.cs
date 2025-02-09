@@ -1,5 +1,5 @@
-﻿using PersonalFinanceTracker.DTO;
-using PersonalFinanceTracker.Entities;
+﻿using PersonalFinanceTracker.Entities;
+using PersonalFinanceTracker.DTO;
 
 namespace PersonalFinanceTracker.Services
 {

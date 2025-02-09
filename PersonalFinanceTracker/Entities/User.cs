@@ -4,18 +4,18 @@
     {
         public int Id { get; set; }
 
-        public string FirstName { get; set; } = String.Empty;
+        public string First_Name { get; set; } = String.Empty;
 
-        public string LastName { get; set; } = String.Empty;
+        public string Last_Name { get; set; } = String.Empty;
 
         public string Username { get; set; } = String.Empty;
 
         public string Email { get; set; } = String.Empty;
 
-        public string PasswordHash { get; set; } = String.Empty;
+        public string Password_Hash { get; set; } = String.Empty;
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime Created_At { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime? Updated_At { get; set; }
     }
 }
