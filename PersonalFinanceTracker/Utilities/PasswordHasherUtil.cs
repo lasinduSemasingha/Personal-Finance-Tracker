@@ -10,6 +10,7 @@ namespace PersonalFinanceTracker.Utilities
         private const int HashSize = 32; // 256-bit hash
         private const int Iterations = 10000; // PBKDF2 iterations
 
+        //Password hashing (Encrypting)
         public static string HashPassword(string password)
         {
             byte[] salt = new byte[SaltSize];
@@ -33,6 +34,7 @@ namespace PersonalFinanceTracker.Utilities
             return Convert.ToBase64String(hashBytes);
         }
 
+        //Password Decrypting
         public static bool VerifyPassword(string password, string base64HashedPassword)
         {
             byte[] hashBytes = Convert.FromBase64String(base64HashedPassword);
