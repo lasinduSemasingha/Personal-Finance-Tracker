@@ -1,6 +1,6 @@
-﻿using Dapper;
-using Npgsql;
+﻿using PersonalFinanceTracker.DTO;
 using PersonalFinanceTracker.Entities;
+using PersonalFinanceTracker.Services;
 
 namespace PersonalFinanceTracker.Endpoints
 {
@@ -8,28 +8,42 @@ namespace PersonalFinanceTracker.Endpoints
     {
         public static void MapTransactionEndpoint(this IEndpointRouteBuilder app)
         {
-            app.MapGet("transactions", async (IConfiguration configuration) =>
+            app.MapGet("/transaction", async (ITransactionService service) =>
             {
-                string connectionString = configuration.GetConnectionString("DefaultConnection");
+                var transactions = await service.GetTransactionsAsync();
+                return Results.Ok(transactions);
+            });
 
-                const string query = "SELECT id, amount, date, description, categoryid, userid FROM \"Personal_Finance\".\"transaction\"";
+            app.MapPost("/transaction", async (CreateTransactionRequest request, ITransactionService service) =>
+            {
+                bool created = await service.CreateTransactionAsync(request);
+                return created
+                    ? Results.Ok(new { message = "Transaction created successfully" })
+                    : Results.BadRequest(new { error = "Failed to create transaction" });
+            });
 
-                try
-                {
-                    using var connection = new NpgsqlConnection(connectionString);
-                    var transactions = await connection.QueryAsync<Transaction>(query);
-                    return Results.Ok(transactions);
-                }
-                catch (NpgsqlException ex)
-                {
-                    // Log or return detailed error message
-                    return Results.Json(new { error = $"Database error: {ex.Message}" }, statusCode: 500);
-                }
-                catch (Exception ex)
-                {
-                    // Catch any other exceptions
-                    return Results.Json(new { error = $"Unexpected error: {ex.Message}" }, statusCode: 500);
-                }
+            app.MapGet("/transaction/{id}", async (int id, ITransactionService service) =>
+            {
+                var transaction = await service.GetTransactionByIdAsync(id);
+                return transaction != null
+                    ? Results.Ok(transaction)
+                    : Results.NotFound($"Transaction with ID {id} not found.");
+            });
+
+            app.MapPut("/transaction/{id}", async (int id, UpdateTransactionRequest request, ITransactionService service) =>
+            {
+                bool updated = await service.UpdateTransactionAsync(id, request);
+                return updated
+                    ? Results.Ok(new { message = "Transaction updated successfully" })
+                    : Results.NotFound(new { error = $"Transaction with ID {id} not found." });
+            });
+
+            app.MapDelete("/transaction/{id}", async (int id, ITransactionService service) =>
+            {
+                bool deleted = await service.DeleteTransactionAsync(id);
+                return deleted
+                    ? Results.Ok(new { message = "Transaction deleted successfully" })
+                    : Results.NotFound(new { error = $"Transaction with ID {id} not found." });
             });
         }
     }
